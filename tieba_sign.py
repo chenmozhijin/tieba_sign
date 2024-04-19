@@ -10,8 +10,6 @@ from threading import Thread
 
 import prettytable as pt
 import requests
-from PIL import Image
-from pyzbar import pyzbar
 
 
 class Tieba:
@@ -108,14 +106,6 @@ class Tieba:
             f.write(r.content)
             f.close()
 
-    def read_qr_code(self, imgurl: str):
-        self.down_qr_code(imgurl)
-        img = Image.open("qrcode.png")
-        barcodes = pyzbar.decode(img)
-        for barcode in barcodes:
-            return barcode.data.decode("utf-8")
-        return None
-
     def get_qr_code(self):
         tt = self.get_time_stamp()
         r = self.s.get(
@@ -129,22 +119,13 @@ class Tieba:
                 "_": tt,
             },
         )
-        app = self.have_app
         imgurl = r.json()["imgurl"]
         while True:
-            if app == "1":
-                print(
-                    f"请使用浏览器打开二维码链接并使用百度贴吧APP / 百度APP扫描：https://{imgurl}",
-                )
-                print("注意：请使用IE浏览器打开二维码链接！！！")
-                break
-            if app == "2":
-                qrurl = self.read_qr_code(imgurl)
-                os.remove("./qrcode.png")
-                print(
-                    f"请使用已经登录了百度贴吧网页端的浏览器打开链接并按照提示完成登陆：{qrurl}",
-                )
-                break
+            print(
+                f"请使用浏览器打开二维码链接并使用百度贴吧APP / 百度APP扫描：https://{imgurl}",
+            )
+            print("注意：请使用IE浏览器打开二维码链接！！！")
+            break
         channel_id = r.json()["sign"]
         return channel_id
 
