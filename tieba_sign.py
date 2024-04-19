@@ -17,6 +17,7 @@ from pyzbar import pyzbar
 class Tieba:
     def __init__(self, users: list[str]) -> None:
         self.users = users
+        self.have_app = False
         self.tb = pt.PrettyTable()
         self.s = requests.session()
 
@@ -128,7 +129,7 @@ class Tieba:
                 "_": tt,
             },
         )
-        app = input("有百度贴吧APP / 百度APP，请输入 1 ，没有请输入 2\n：")
+        app = self.have_app
         imgurl = r.json()["imgurl"]
         while True:
             if app == "1":
